@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f1115">
+<title>سرعة - تطبيق المطعم</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1115; --panel: #161922; --panel-2: #1d212c; --line: #262b38;
+  --text: #e8eaf0; --muted: #8a93a6; --accent: #4dabf7; --accent-2: #74c0fc;
+  --success: #2ecc71; --danger: #ff4757; --info: #4dabf7; --warning: #ffc83d;
+  --role-color: #4dabf7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+.login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  background-image: radial-gradient(circle at 20% 30%, rgba(77, 171, 247, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(116, 192, 252, 0.1) 0%, transparent 50%); }
+.login-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 30px 24px; max-width: 420px; width: 100%; }
+.login-logo { width: 70px; height: 70px; background: linear-gradient(135deg, var(--role-color), var(--accent-2)); border-radius: 18px;
+  display: grid; place-items: center; font-size: 34px; margin: 0 auto 18px; box-shadow: 0 10px 30px rgba(77, 171, 247, 0.4); }
+.login-title { text-align: center; font-family: 'Reem Kufi'; font-size: 24px; margin-bottom: 6px; }
+.login-subtitle { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.cloud-status { display: flex; align-items: center; gap: 6px; background: rgba(46, 204, 113, 0.1); border: 1px solid var(--success);
+  color: var(--success); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin: 0 auto 16px; width: fit-content; }
+.role-badge-top { background: rgba(77, 171, 247, 0.15); border: 1px solid var(--role-color); color: var(--role-color);
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-align: center; margin: 0 auto 18px; width: fit-content; }
+.sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: blink 1.5s infinite; display: inline-block; margin-left: 4px; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+header { background: linear-gradient(135deg, #1a1d28, #161922); border-bottom: 1px solid var(--line); padding: 12px 14px;
+  position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.header-logo { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+.header-logo-mark { width: 36px; height: 36px; background: linear-gradient(135deg, var(--role-color), var(--accent-2));
+  border-radius: 10px; display: grid; place-items: center; font-size: 17px; flex-shrink: 0; }
+.header-logo h1 { font-family: 'Reem Kufi'; font-size: 14px; }
+.header-logo p { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.logout-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--danger); padding: 6px 10px;
+  border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--panel); border-top: 1px solid var(--line);
+  display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); }
+.nav-btn { flex: 1; padding: 10px 6px; background: transparent; border: none; color: var(--muted); font-family: inherit;
+  font-size: 11px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.nav-btn.active { color: var(--role-color); }
+.nav-icon { font-size: 20px; }
+main { padding: 14px; max-width: 600px; margin: 0 auto; }
+.screen { display: none; animation: fadeIn 0.25s; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Reem Kufi'; }
+.card-title .dot { width: 4px; height: 18px; background: var(--role-color); border-radius: 3px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 11px 12px; background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 14px; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--role-color); }
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-error { background: rgba(255, 71, 87, 0.1); border: 1px solid var(--danger); color: var(--danger);
+  padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; }
+.btn { padding: 12px 18px; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(135deg, var(--role-color), var(--accent-2)); color: white; box-shadow: 0 4px 14px rgba(77, 171, 247, 0.25); }
+.btn-ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+.hint { background: rgba(77, 171, 247, 0.08); border: 1px solid rgba(77, 171, 247, 0.3); border-radius: 10px;
+  padding: 10px 12px; font-size: 11px; color: var(--info); margin-bottom: 12px; line-height: 1.6; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat-mini { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; }
+.stat-mini-value { font-size: 18px; font-weight: 900; font-family: 'Reem Kufi'; color: var(--role-color); }
+.stat-mini-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.order-item { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.order-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; }
+.order-id { font-weight: 700; font-size: 13px; }
+.order-time { font-size: 11px; color: var(--muted); }
+.order-info { font-size: 12px; color: var(--muted); margin: 3px 0; line-height: 1.5; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.badge-pending { background: rgba(255, 200, 61, 0.15); color: var(--warning); }
+.badge-accepted { background: rgba(77, 171, 247, 0.15); color: var(--info); }
+.badge-pickup { background: rgba(255, 107, 61, 0.15); color: #ff6b3d; }
+.badge-delivering { background: rgba(255, 184, 77, 0.2); color: #ffb84d; }
+.badge-delivered { background: rgba(46, 204, 113, 0.15); color: var(--success); }
+.badge-cancelled { background: rgba(255, 71, 87, 0.15); color: var(--danger); }
+.badge-success { background: rgba(46, 204, 113, 0.15); color: var(--success); }
+.entity-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+.entity-card h4 { font-family: 'Reem Kufi'; font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+.entity-card .meta { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.empty { text-align: center; padding: 28px 14px; color: var(--muted); }
+.empty-icon { font-size: 38px; margin-bottom: 8px; opacity: 0.5; }
+.empty p { font-size: 13px; }
+.toast { position: fixed; bottom: 86px; left: 14px; right: 14px; background: var(--panel); border: 1px solid var(--success);
+  border-radius: 12px; padding: 11px 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 1000; transform: translateY(150px);
+  transition: transform 0.3s; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+.toast.show { transform: translateY(0); }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.delivery-proof { background: var(--panel); border: 1px solid var(--success); border-radius: 10px; padding: 10px;
+  margin-top: 10px; font-size: 12px; }
+.delivery-proof img { max-width: 100%; border-radius: 8px; margin-top: 6px; cursor: pointer; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--line); }
+.an-input { width: 100%; padding: 11px 12px; background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 10px; color: var(--text); font-family: inherit; font-size: 14px; }
+.an-input:focus { outline: none; border-color: var(--role-color); }
+.btn-sm { padding: 8px 12px !important; font-size: 12px !important; }
+.card-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen" style="display:none;">
+  <div class="login-card">
+    <div class="login-logo">🍽️</div>
+    <div class="login-title">منصة سرعة</div>
+    <div class="login-subtitle">تطبيق المطعم</div>
+    <div class="cloud-status"><span class="sync-dot"></span><span>متصل بـ Firebase</span></div>
+    <div class="role-badge-top">🍽️ دخول المطاعم فقط</div>
+    <div class="form-error" id="loginError" style="display:none;"></div>
+    <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="restaurant@sora3a.com"></div>
+    <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+    <button class="btn btn-primary" id="loginBtn">🔐 دخول</button>
+    <p style="color: var(--muted); font-size: 11px; text-align: center; margin-top: 16px; line-height: 1.6;">
+      💡 الإدارة تعطيك بيانات الدخول.<br>إذا ما عندك حساب، تواصل مع إدارة المنصة.
+    </p>
+  </div>
+</div>
+
+<div id="appContainer" style="display:none;">
+<header>
+  <div class="header-logo">
+    <div class="header-logo-mark">🍽️</div>
+    <div style="min-width: 0; flex: 1;">
+      <h1 id="hTitle">تطبيق المطعم <span class="sync-dot"></span></h1>
+      <p id="hSubtitle">—</p>
+    </div>
+  </div>
+  <button class="logout-btn" onclick="logout()">خروج</button>
+</header>
+
+<main>
+<section class="screen active" id="screen-orders">
+  <div class="stats-row">
+    <div class="stat-mini"><div class="stat-mini-value" id="r-today">0</div><div class="stat-mini-label">اليوم</div></div>
+    <div class="stat-mini"><div class="stat-mini-value" id="r-active">0</div><div class="stat-mini-label">نشطة</div></div>
+    <div class="stat-mini"><div class="stat-mini-value" id="r-done">0</div><div class="stat-mini-label">مسلّمة</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 🏪 <span id="restName">المطعم</span></div>
+    <div class="hint">💡 املأ بيانات الطلب، يستلم كباتنك تنبيه فوري بالصوت</div>
+
+    <div class="form-row">
+      <div class="form-group"><label>اسم الزبون *</label><input type="text" id="customerName"></div>
+      <div class="form-group"><label>الهاتف *</label><input type="tel" id="customerPhone"></div>
+    </div>
+    <div class="form-group"><label>عنوان التوصيل *</label><textarea id="customerAddress" placeholder="الحي والشارع والعلامة المميزة"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>قيمة الطلب (د.ع) *</label><input type="number" id="orderValue" placeholder="25000"></div>
+      <div class="form-group"><label>التوصيل (د.ع) *</label><input type="number" id="deliveryFee" value="5000"></div>
+    </div>
+    <div class="form-group"><label>تفاصيل الطلب *</label><textarea id="orderNotes" placeholder="مثلاً: 2 برجر + كولا"></textarea></div>
+    <button class="btn btn-primary" id="sendOrderBtn">📡 إرسال للكباتن</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> طلبات اليوم</div>
+    <div id="restaurantOrders"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-captains">
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 🛵 كباتني</div>
+    <div class="hint">الكباتن المسجلين لاستلام طلبات مطعمك</div>
+    <div id="myCaptains"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-analytics">
+  <!-- اختيار الفترة -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 🗓️ الفترة الزمنية</div>
+    <div style="display:flex; gap:8px; align-items:flex-end;">
+      <div style="flex:1;"><label style="font-size:11px; color:var(--muted);">من</label>
+        <input type="date" id="anFrom" class="an-input" onchange="renderAnalytics()"></div>
+      <div style="flex:1;"><label style="font-size:11px; color:var(--muted);">إلى</label>
+        <input type="date" id="anTo" class="an-input" onchange="renderAnalytics()"></div>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="setAnPreset('today')">اليوم</button>
+      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="setAnPreset('week')">أسبوع</button>
+      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="setAnPreset('month')">شهر</button>
+      <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="setAnPreset('all')">الكل</button>
+    </div>
+  </div>
+
+  <!-- ملخص الفترة -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 📊 ملخص الفترة</div>
+    <div class="stats-row">
+      <div class="stat-mini"><div class="stat-mini-value" id="an-orders">0</div><div class="stat-mini-label">طلبات</div></div>
+      <div class="stat-mini"><div class="stat-mini-value" id="an-delivered">0</div><div class="stat-mini-label">مسلّمة</div></div>
+      <div class="stat-mini"><div class="stat-mini-value" id="an-cancelled">0</div><div class="stat-mini-label">ملغية</div></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-mini"><div class="stat-mini-value" id="an-total-value">0</div><div class="stat-mini-label">قيمة الطلبات (د.ع)</div></div>
+      <div class="stat-mini"><div class="stat-mini-value" id="an-avg-value">0</div><div class="stat-mini-label">متوسط الطلب (د.ع)</div></div>
+    </div>
+  </div>
+
+  <!-- تحليل الزبائن -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 👥 الزبائن</div>
+    <div class="card-subtitle">بحث بالاسم أو رقم الهاتف</div>
+    <input type="text" id="anCustSearch" class="an-input" placeholder="🔍 ابحث عن زبون..." style="margin-bottom:10px;" oninput="renderAnCustomers()">
+    <button class="btn btn-primary btn-sm" style="margin-bottom:10px;" onclick="exportAnCustomers()">📊 تصدير Excel</button>
+    <div id="anCustomersList"></div>
+  </div>
+
+  <!-- أداء الكباتن -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> 🛵 أداء الكباتن</div>
+    <div class="card-subtitle">المقبولة والمرفوضة لكل كابتن</div>
+    <button class="btn btn-primary btn-sm" style="margin-bottom:10px;" onclick="exportAnCaptains()">📊 تصدير Excel</button>
+    <div id="anCaptainsList"></div>
+  </div>
+</section>
+</main>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-screen="orders"><div class="nav-icon">📋</div><div>الطلبات</div></button>
+  <button class="nav-btn" data-screen="captains"><div class="nav-icon">🛵</div><div>كباتني</div></button>
+  <button class="nav-btn" data-screen="analytics"><div class="nav-icon">📊</div><div>تحليلات</div></button>
+</nav>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastText">تم</span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeAuth, browserLocalPersistence, indexedDBLocalPersistence,
+  signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc,
+  query, where, orderBy, onSnapshot, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDMqqb4XN25rAM5DBvSuDPjDN1dgcya-zA",
+  authDomain: "sora3a-delivery.firebaseapp.com",
+  projectId: "sora3a-delivery",
+  storageBucket: "sora3a-delivery.firebasestorage.app",
+  messagingSenderId: "774569904586",
+  appId: "1:774569904586:web:e0d2e20d8964e4d6656733"
+};
+
+// Named app "sora3a-restaurant" = isolated session (won't conflict with admin/captain)
+const app = initializeApp(firebaseConfig, "sora3a-restaurant");
+const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
+const db = getFirestore(app);
+
+window.fb = { app, auth, db };
+window.fbFns = { signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  collection, doc, getDoc, getDocs, addDoc, updateDoc, query, where, orderBy, onSnapshot, serverTimestamp };
+
+document.getElementById('loginScreen').style.display = 'flex';
+window.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<script>
+'use strict';
+let currentUser = null;
+let currentUserData = null;
+let unsubscribers = [];
+let cachedCaptains = [];
+let cachedOrders = [];
+let cachedCaptainLocations = {};
+
+window.addEventListener('firebaseReady', () => {
+  setupAuthListener();
+  setupLogin();
+  setupNav();
+  document.getElementById('sendOrderBtn').addEventListener('click', sendOrder);
+});
+
+function fmt(n) { return Number(n || 0).toLocaleString('en-US'); }
+function nowTime() { const d = new Date(); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function statusBadge(status) {
+  const map = { pending: { class: 'badge-pending', text: '🟡 ينتظر' }, accepted: { class: 'badge-accepted', text: '🔵 مقبول' },
+    pickup: { class: 'badge-pickup', text: '🟠 في المطعم' }, delivering: { class: 'badge-delivering', text: '🛵 يتوصل' },
+    delivered: { class: 'badge-delivered', text: '✅ مسلّم' }, cancelled: { class: 'badge-cancelled', text: '❌ ملغي' } };
+  return `<span class="badge ${map[status].class}">${map[status].text}</span>`;
+}
+let toastTimeout;
+function showToast(text, icon = '✅') {
+  document.getElementById('toastText').textContent = text;
+  document.getElementById('toastIcon').textContent = icon;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============ إشعار إلغاء الكابتن ============
+let seenCancelNotices = {};
+let firstSnapshotDone = false;
+
+function playAlertSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // نغمتان تنبيهيتان
+    [0, 0.3].forEach(delay => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + delay + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + 0.25);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.3);
+    });
+  } catch(e) { /* الصوت غير مدعوم */ }
+}
+
+function checkCancelNotices(newOrders) {
+  newOrders.forEach(o => {
+    // إشعار الإلغاء
+    const cn = o.cancelNotice;
+    if (cn && !cn.seen && !seenCancelNotices['c_' + o.id + '_' + cn.timestamp]) {
+      seenCancelNotices['c_' + o.id + '_' + cn.timestamp] = true;
+      if (firstSnapshotDone) {
+        showNoticeBanner(o, cn, 'cancel');
+        playAlertSound();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+      window.fbFns.updateDoc(window.fbFns.doc(window.fb.db, 'orders', o.id), { 'cancelNotice.seen': true }).catch(()=>{});
+    }
+    // إشعار الرفض
+    const rn = o.rejectNotice;
+    if (rn && !rn.seen && !seenCancelNotices['r_' + o.id + '_' + rn.timestamp]) {
+      seenCancelNotices['r_' + o.id + '_' + rn.timestamp] = true;
+      if (firstSnapshotDone) {
+        showNoticeBanner(o, rn, 'reject');
+        playAlertSound();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+      window.fbFns.updateDoc(window.fbFns.doc(window.fb.db, 'orders', o.id), { 'rejectNotice.seen': true }).catch(()=>{});
+    }
+  });
+  firstSnapshotDone = true;
+}
+
+function showNoticeBanner(order, notice, type) {
+  const isCancel = type === 'cancel';
+  const icon = isCancel ? '🚫' : '✗';
+  const title = isCancel ? 'ألغى الكابتن الطلب' : 'رفض الكابتن الطلب';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999; display:flex; align-items:center; justify-content:center; padding:24px;';
+  overlay.innerHTML = `
+    <div style="background:var(--panel); border:2px solid var(--danger); border-radius:18px; padding:24px; max-width:340px; text-align:center;">
+      <div style="font-size:48px; margin-bottom:10px;">${icon}</div>
+      <h3 style="font-family:'Reem Kufi'; color:var(--danger); font-size:18px; margin-bottom:10px;">${title}</h3>
+      <div style="background:var(--panel-2); border-radius:10px; padding:12px; margin-bottom:14px; font-size:13px; text-align:right;">
+        <div style="margin-bottom:6px;">🛵 الكابتن: <strong>${notice.by}</strong></div>
+        <div style="margin-bottom:6px;">📋 الطلب: <strong>${order.id.substring(0,6).toUpperCase()}</strong></div>
+        <div style="margin-bottom:6px;">👤 الزبون: ${order.customer}</div>
+        <div style="color:var(--accent);">🕐 ${notice.time}</div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:14px;">الطلب متاح للكباتن الآخرين</div>
+      <button class="btn btn-primary" id="dismissNoticeBanner">حسناً</button>
+    </div>`;
+  overlay.querySelector('#dismissNoticeBanner').onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+}
+
+
+function setupLogin() {
+  document.getElementById('loginBtn').addEventListener('click', login);
+  document.getElementById('loginPassword').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+}
+
+async function login() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+  const loginBtn = document.getElementById('loginBtn');
+  if (!email || !password) { errorEl.textContent = 'أدخل الإيميل وكلمة المرور'; errorEl.style.display = 'block'; return; }
+  errorEl.style.display = 'none';
+  loginBtn.innerHTML = '<div class="spinner"></div>';
+  loginBtn.disabled = true;
+  try {
+    const cred = await window.fbFns.signInWithEmailAndPassword(window.fb.auth, email, password);
+    const userDoc = await window.fbFns.getDoc(window.fbFns.doc(window.fb.db, 'users', cred.user.uid));
+    if (!userDoc.exists()) throw new Error('بيانات المستخدم غير موجودة');
+    const userData = userDoc.data();
+    if (userData.role !== 'restaurant') {
+      await window.fbFns.signOut(window.fb.auth);
+      const roleAr = userData.role === 'admin' ? 'الإدارة' : 'الكابتن';
+      throw new Error(`❌ هذا حساب ${roleAr}. استخدم التطبيق الصحيح`);
+    }
+  } catch (err) {
+    let msg = err.message;
+    if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') msg = '❌ بيانات الدخول غير صحيحة';
+    else if (err.code === 'auth/too-many-requests') msg = '⚠️ محاولات كثيرة، انتظر قليلاً';
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+    loginBtn.innerHTML = '🔐 دخول';
+    loginBtn.disabled = false;
+  }
+}
+
+function setupAuthListener() {
+  window.fbFns.onAuthStateChanged(window.fb.auth, async (user) => {
+    if (user) {
+      try {
+        const userDoc = await window.fbFns.getDoc(window.fbFns.doc(window.fb.db, 'users', user.uid));
+        if (!userDoc.exists()) { await window.fbFns.signOut(window.fb.auth); return; }
+        const userData = userDoc.data();
+        if (userData.role !== 'restaurant') {
+          await window.fbFns.signOut(window.fb.auth);
+          alert('❌ هذا الحساب ليس للمطاعم. استخدم التطبيق الصحيح.');
+          return;
+        }
+        currentUser = { uid: user.uid, email: user.email, ...userData };
+        // Get restaurant data
+        const restSnap = await window.fbFns.getDocs(window.fbFns.query(
+          window.fbFns.collection(window.fb.db, 'restaurants'),
+          window.fbFns.where('userId', '==', currentUser.uid)
+        ));
+        if (!restSnap.empty) {
+          currentUserData = { id: restSnap.docs[0].id, ...restSnap.docs[0].data() };
+        }
+        await enterApp();
+      } catch (e) { console.error(e); await window.fbFns.signOut(window.fb.auth); }
+    } else {
+      currentUser = null;
+      currentUserData = null;
+      stopAllListeners();
+      document.getElementById('appContainer').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('loginBtn').innerHTML = '🔐 دخول';
+      document.getElementById('loginBtn').disabled = false;
+    }
+  });
+}
+
+window.logout = async function() {
+  if (!confirm('تسجيل الخروج؟')) return;
+  stopAllListeners();
+  await window.fbFns.signOut(window.fb.auth);
+};
+
+function stopAllListeners() { unsubscribers.forEach(u => u && u()); unsubscribers = []; }
+
+async function enterApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'block';
+  document.getElementById('hSubtitle').textContent = currentUser.name;
+  if (currentUserData) document.getElementById('restName').textContent = currentUserData.name;
+  setupRealtimeListeners();
+}
+
+function setupNav() {
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.addEventListener('click', () => switchScreen(b.dataset.screen));
+  });
+}
+
+function switchScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${screenId}`).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`.nav-btn[data-screen="${screenId}"]`).forEach(b => b.classList.add('active'));
+  window.scrollTo(0, 0);
+  renderAll();
+}
+
+function setupRealtimeListeners() {
+  stopAllListeners();
+  if (!currentUserData) return;
+  unsubscribers.push(
+    window.fbFns.onSnapshot(window.fbFns.query(
+      window.fbFns.collection(window.fb.db, 'orders'),
+      window.fbFns.where('restaurantId', '==', currentUserData.id)
+    ), (snap) => {
+      const newOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a,b) => (b.createdAtMs||0) - (a.createdAtMs||0));
+      // كشف إشعارات الإلغاء الجديدة من الكباتن
+      checkCancelNotices(newOrders);
+      cachedOrders = newOrders;
+      renderAll();
+    }),
+    window.fbFns.onSnapshot(window.fbFns.query(
+      window.fbFns.collection(window.fb.db, 'captains'),
+      window.fbFns.where('restaurantId', '==', currentUserData.id)
+    ), (snap) => {
+      cachedCaptains = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }),
+    window.fbFns.onSnapshot(window.fbFns.collection(window.fb.db, 'captainLocations'), (snap) => {
+      cachedCaptainLocations = {};
+      snap.docs.forEach(d => { cachedCaptainLocations[d.id] = d.data(); });
+      renderAll();
+    })
+  );
+}
+
+async function sendOrder() {
+  const name = document.getElementById('customerName').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+  const address = document.getElementById('customerAddress').value.trim();
+  const value = parseFloat(document.getElementById('orderValue').value) || 0;
+  const fee = parseFloat(document.getElementById('deliveryFee').value) || 0;
+  const notes = document.getElementById('orderNotes').value.trim();
+
+  if (!name || !phone || !address || !value || !fee || !notes) { alert('املأ جميع الحقول'); return; }
+  if (cachedCaptains.length === 0) { alert('⚠️ لا يوجد كباتن مسجلين! تواصل مع الإدارة'); return; }
+
+  const btn = document.getElementById('sendOrderBtn');
+  btn.innerHTML = '<div class="spinner"></div>';
+  btn.disabled = true;
+
+  try {
+    await window.fbFns.addDoc(window.fbFns.collection(window.fb.db, 'orders'), {
+      restaurantId: currentUserData.id,
+      restaurantName: currentUserData.name,
+      customer: name, phone, address, value, fee, notes,
+      commission: Math.round(value * 0.10),
+      captainId: null, captainName: null,
+      status: 'pending',
+      createdAt: nowTime(),
+      createdAtMs: Date.now(),
+      timeline: [{ status: 'pending', time: nowTime(), text: 'تم إنشاء الطلب من ' + currentUserData.name }],
+      deliveryProof: null,
+      rejectedBy: []
+    });
+    showToast('✅ تم إرسال الطلب للكباتن');
+    ['customerName','customerPhone','customerAddress','orderValue','orderNotes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('deliveryFee').value = '5000';
+  } catch (err) { alert('خطأ: ' + err.message); }
+  btn.innerHTML = '📡 إرسال للكباتن';
+  btn.disabled = false;
+}
+
+window.openImageFullscreen = function(orderId) {
+  const order = cachedOrders.find(o => o.id === orderId);
+  if (!order?.deliveryProof) return;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; flex-direction:column; gap:14px;';
+  overlay.innerHTML = `<div style="color:white; font-family:'Reem Kufi'; font-size:16px;">📸 إثبات تسليم</div>
+    <img src="${order.deliveryProof.image}" style="max-width:100%; max-height:75vh; border-radius:12px;">
+    <div style="color:#8a93a6; font-size:13px; text-align:center;">${order.deliveryProof.capturedBy} - ${order.deliveryProof.time}</div>
+    <button style="background:#4dabf7; color:white; border:none; padding:12px 24px; border-radius:10px; font-weight:700; font-family:inherit;">إغلاق</button>`;
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+};
+
+function renderAll() {
+  if (!currentUser || !currentUserData) return;
+  document.getElementById('r-today').textContent = cachedOrders.length;
+  document.getElementById('r-active').textContent = cachedOrders.filter(o => ['accepted','pickup','delivering'].includes(o.status)).length;
+  document.getElementById('r-done').textContent = cachedOrders.filter(o => o.status === 'delivered').length;
+
+  const list = document.getElementById('restaurantOrders');
+  if (cachedOrders.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><p>لا توجد طلبات</p></div>';
+  } else {
+    list.innerHTML = cachedOrders.map(o => `
+      <div class="order-item">
+        <div class="order-row">
+          <span class="order-id">${o.id.substring(0,6).toUpperCase()}</span>
+          <span class="order-time">${o.createdAt}</span>
+        </div>
+        <div class="order-info">👤 ${o.customer} • 📞 ${o.phone}</div>
+        <div class="order-info">📍 ${o.address}</div>
+        <div class="order-info">💰 ${fmt(o.value)} + ${fmt(o.fee)} توصيل</div>
+        <div class="order-row" style="margin-top:8px">
+          ${statusBadge(o.status)}
+          <span style="font-size:11px;color:var(--muted)">${o.captainName || 'يبحث...'}</span>
+        </div>
+        ${o.deliveryProof ? `
+          <div class="delivery-proof">
+            ✅ <strong>تم التسليم بصورة</strong> ${o.deliveryProof.time}
+            <img src="${o.deliveryProof.image}" onclick="openImageFullscreen('${o.id}')">
+          </div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  const capList = document.getElementById('myCaptains');
+  if (cachedCaptains.length === 0) {
+    capList.innerHTML = '<div class="empty"><div class="empty-icon">🛵</div><p>لا يوجد كباتن لمطعمك<br><small>تواصل مع الإدارة لإضافة كباتن</small></p></div>';
+  } else {
+    capList.innerHTML = cachedCaptains.map(c => {
+      const loc = cachedCaptainLocations[c.id];
+      const isOnline = loc && (Date.now() - loc.timestamp) < 30000;
+      const isAvailable = c.available !== false; // الافتراضي متاح
+      const myOrders = cachedOrders.filter(o => o.captainId === c.id && o.status === 'delivered');
+      return `<div class="entity-card">
+        <h4><span>🛵 ${c.name}</span>
+        <span class="badge ${isAvailable ? 'badge-success' : 'badge-cancelled'}">${isAvailable ? '🟢 متاح' : '🔴 غير متاح'}</span></h4>
+        <div class="meta">
+        ${isOnline ? '📡 متصل (GPS)' : '⚫ غير متصل'}<br>
+        📞 <a href="tel:${c.phone}" style="color:var(--accent)">${c.phone}</a><br>
+        ${c.vehicle === 'سيارة' ? '🚗' : '🏍️'} ${c.vehicle}<br>📦 ${myOrders.length} توصيلة منجزة</div></div>`;
+    }).join('');
+  }
+
+  // تحديث التحليلات (الحقول موجودة دائماً في DOM)
+  if (document.getElementById('an-orders')) renderAnalytics();
+}
+
+// ============ التحليلات ============
+function setAnDefaultDates() {
+  const from = document.getElementById('anFrom');
+  const to = document.getElementById('anTo');
+  if (from && !from.value && to && !to.value) {
+    const today = new Date();
+    const monthAgo = new Date(); monthAgo.setDate(today.getDate() - 30);
+    from.value = monthAgo.toISOString().slice(0,10);
+    to.value = today.toISOString().slice(0,10);
+  }
+}
+
+window.setAnPreset = function(preset) {
+  const from = document.getElementById('anFrom');
+  const to = document.getElementById('anTo');
+  const today = new Date();
+  to.value = today.toISOString().slice(0,10);
+  if (preset === 'today') {
+    from.value = today.toISOString().slice(0,10);
+  } else if (preset === 'week') {
+    const d = new Date(); d.setDate(today.getDate() - 7);
+    from.value = d.toISOString().slice(0,10);
+  } else if (preset === 'month') {
+    const d = new Date(); d.setDate(today.getDate() - 30);
+    from.value = d.toISOString().slice(0,10);
+  } else if (preset === 'all') {
+    from.value = '2020-01-01';
+  }
+  renderAnalytics();
+};
+
+function getAnRange() {
+  const fromV = document.getElementById('anFrom')?.value;
+  const toV = document.getElementById('anTo')?.value;
+  const start = fromV ? new Date(fromV + 'T00:00:00').getTime() : 0;
+  const end = toV ? new Date(toV + 'T00:00:00').getTime() + 86400000 : Infinity;
+  return { start, end };
+}
+
+function getAnOrders() {
+  const { start, end } = getAnRange();
+  return cachedOrders.filter(o => {
+    const t = o.createdAtMs || 0;
+    return t >= start && t < end;
+  });
+}
+
+function renderAnalytics() {
+  setAnDefaultDates();
+  const orders = getAnOrders();
+  const delivered = orders.filter(o => o.status === 'delivered');
+  const cancelled = orders.filter(o => o.status === 'cancelled');
+  const totalValue = delivered.reduce((s,o) => s + (o.value || 0), 0);
+  const avgValue = delivered.length ? Math.round(totalValue / delivered.length) : 0;
+
+  document.getElementById('an-orders').textContent = orders.length;
+  document.getElementById('an-delivered').textContent = delivered.length;
+  document.getElementById('an-cancelled').textContent = cancelled.length;
+  document.getElementById('an-total-value').textContent = fmt(totalValue);
+  document.getElementById('an-avg-value').textContent = fmt(avgValue);
+
+  renderAnCustomers();
+  renderAnCaptains();
+}
+
+// تجميع الزبائن ضمن الفترة
+function computeAnCustomers() {
+  const orders = getAnOrders();
+  const map = {};
+  orders.forEach(o => {
+    const key = (o.phone || '').trim() || (o.customer || '').trim();
+    if (!key) return;
+    if (!map[key]) map[key] = { name: o.customer || '—', phone: o.phone || '—', address: o.address || '', count: 0, delivered: 0, cancelled: 0, totalValue: 0, lastOrder: 0 };
+    const c = map[key];
+    c.count++;
+    if (o.status === 'delivered') { c.delivered++; c.totalValue += (o.value || 0); }
+    if (o.status === 'cancelled') c.cancelled++;
+    if ((o.createdAtMs||0) > c.lastOrder) { c.lastOrder = o.createdAtMs; c.address = o.address || c.address; }
+    if (o.customer && o.customer !== '—') c.name = o.customer;
+  });
+  return Object.values(map);
+}
+
+function renderAnCustomers() {
+  const list = document.getElementById('anCustomersList');
+  if (!list) return;
+  const search = (document.getElementById('anCustSearch')?.value || '').trim().toLowerCase();
+  let data = computeAnCustomers();
+  if (search) data = data.filter(c => c.name.toLowerCase().includes(search) || c.phone.toLowerCase().includes(search));
+  data.sort((a,b) => b.count - a.count);
+  if (data.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>لا توجد نتائج</p></div>'; return; }
+  list.innerHTML = `<div style="color:var(--muted); font-size:11px; margin-bottom:8px;">عدد الزبائن: ${data.length}</div>` +
+    data.slice(0,100).map(c => {
+      const lastDate = c.lastOrder ? new Date(c.lastOrder).toLocaleDateString('en-GB') : '—';
+      return `<div class="entity-card">
+        <h4><span>👤 ${c.name}</span><span class="badge badge-success">${c.count} طلب</span></h4>
+        <div class="meta">
+          📞 <a href="tel:${c.phone}" style="color:var(--accent)">${c.phone}</a><br>
+          📍 ${c.address || '—'}<br>
+          ✅ مسلّم: ${c.delivered} • ❌ ملغي: ${c.cancelled}<br>
+          💰 إجمالي الصرف: ${fmt(c.totalValue)} د.ع<br>
+          🕐 آخر طلب: ${lastDate}
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// أداء الكباتن: المقبولة والمرفوضة
+function computeAnCaptains() {
+  const orders = getAnOrders();
+  return cachedCaptains.map(c => {
+    const accepted = orders.filter(o => o.captainId === c.id).length;
+    const delivered = orders.filter(o => o.captainId === c.id && o.status === 'delivered').length;
+    // المرفوضة: الطلبات التي رفضها هذا الكابتن (موجود في rejectedBy)
+    const rejected = orders.filter(o => Array.isArray(o.rejectedBy) && o.rejectedBy.includes(c.id)).length;
+    const earnings = orders.filter(o => o.captainId === c.id && o.status === 'delivered').reduce((s,o) => s + (o.fee||0), 0);
+    return { name: c.name, phone: c.phone || '', vehicle: c.vehicle || '', accepted, delivered, rejected, earnings };
+  });
+}
+
+function renderAnCaptains() {
+  const list = document.getElementById('anCaptainsList');
+  if (!list) return;
+  const data = computeAnCaptains();
+  if (data.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">🛵</div><p>لا يوجد كباتن</p></div>'; return; }
+  data.sort((a,b) => b.delivered - a.delivered);
+  list.innerHTML = data.map(c => `
+    <div class="entity-card">
+      <h4>🛵 ${c.name}</h4>
+      <div class="meta">
+        📞 ${c.phone}<br>
+        ✅ مقبولة: <span style="color:var(--success)">${c.accepted}</span> •
+        📦 مسلّمة: <span style="color:var(--info)">${c.delivered}</span> •
+        ❌ مرفوضة: <span style="color:var(--danger)">${c.rejected}</span><br>
+        💰 أجوره: ${fmt(c.earnings)} د.ع
+      </div>
+    </div>`).join('');
+}
+
+// ============ تصدير Excel ============
+function downloadExcel(rows, sheetName, fileName) {
+  if (typeof XLSX === 'undefined') { alert('⚠️ مكتبة Excel لم تُحمّل، تحقق من الإنترنت'); return; }
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  XLSX.writeFile(wb, fileName);
+}
+
+window.exportAnCustomers = function() {
+  const search = (document.getElementById('anCustSearch')?.value || '').trim().toLowerCase();
+  let data = computeAnCustomers();
+  if (search) data = data.filter(c => c.name.toLowerCase().includes(search) || c.phone.toLowerCase().includes(search));
+  if (data.length === 0) { alert('لا توجد بيانات'); return; }
+  data.sort((a,b) => b.count - a.count);
+  const rows = data.map(c => ({
+    'الزبون': c.name, 'الهاتف': c.phone, 'العنوان': c.address,
+    'عدد الطلبات': c.count, 'المسلّمة': c.delivered, 'الملغية': c.cancelled,
+    'إجمالي الصرف': c.totalValue, 'آخر طلب': c.lastOrder ? new Date(c.lastOrder).toLocaleDateString('en-GB') : ''
+  }));
+  downloadExcel(rows, 'الزبائن', 'زبائن_المطعم.xlsx');
+};
+
+window.exportAnCaptains = function() {
+  const data = computeAnCaptains();
+  if (data.length === 0) { alert('لا توجد بيانات'); return; }
+  data.sort((a,b) => b.delivered - a.delivered);
+  const rows = data.map(c => ({
+    'الكابتن': c.name, 'الهاتف': c.phone, 'المركبة': c.vehicle,
+    'المقبولة': c.accepted, 'المسلّمة': c.delivered, 'المرفوضة': c.rejected, 'الأجور': c.earnings
+  }));
+  downloadExcel(rows, 'الكباتن', 'أداء_الكباتن.xlsx');
+};
+
+setInterval(() => { if (currentUser) renderAll(); }, 5000);
+</script>
+</body>
+</html>
